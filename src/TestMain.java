@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
+import org.apache.commons.httpclient.Header;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpStatus;
@@ -29,15 +30,17 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import com.etoak.crawl.page.Page;
+import com.google.gson.Gson;
 
 public class TestMain {
 
 	private static List<Company> Clist = new ArrayList<Company>();
 
 	public static void main(String[] args) {
-			try {
-				yanzhengAli();
-			yanzhegn();
+		try {
+			yanzhengAli1();
+			yanzhengAli2();
+		    yanzhegn();
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -45,15 +48,27 @@ public class TestMain {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-//		int page = 1;
-//		while (page < 100) {
+		
+//		int page = 100;
+//		while (page < 300) {
 //			try {
 //				System.out.println("size--------------" + Clist.size());
 //				http(page);
 //			} catch (Exception e) {
 //				// TODO: handle exception
-//				System.out.println("--------------");
-//				getGenerateExcel();
+//				 e.printStackTrace();
+//				 System.out.println("dddd");
+//				try {
+//					
+//					 yanzhengAli1();
+//					 yanzhengAli2();
+//					
+//					 yanzhegn();
+//					http(page );
+//
+//				} catch (Exception e2) {
+//					// TODO: handle exception
+//				}
 //				return;
 //			}
 //			page++;
@@ -77,13 +92,14 @@ public class TestMain {
 		// 2.生成 GetMethod 对象并设置参数
 		GetMethod getMethod = new GetMethod(url);
 		getMethod.addRequestHeader("Cookie",
-				"QCCSESSID=p1ft0tgaorlf4a4cogvpi5v7r3; acw_tc=7793461d15611625336878485e5021a0429ce7314f8c35e55c8ba1be7c; UM_distinctid=16b7c89d6492f0-0629935d1baeb5-3c604504-1fa400-16b7c89d64a28b; CNZZDATA1254842228=85523239-1561157384-%7C1561157384; zg_did=%7B%22did%22%3A%20%2216b7c89d81032-018dc4edb6fa46-3c604504-1fa400-16b7c89d811643%22%7D; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1561162537; _uab_collina=156116253853518634866458; hasShow=1; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561162536979%2C%22updated%22%3A%201561162580177%2C%22info%22%3A%201561162536982%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22cuid%22%3A%20%2230ac091ea78c29c624d3b0afb69997c3%22%7D; Hm_lpvt_3456bee468c83cc63fb5147f119f1075=1561162580");
+				"UM_distinctid=16b72c0ff50555-0d50f17e5c8578-3c604504-1fa400-16b72c0ff51660; zg_did=%7B%22did%22%3A%20%2216b72c0ff5f572-011d0e55575c9-3c604504-1fa400-16b72c0ff603ad%22%7D; _uab_collina=156099837952298970109224; acw_tc=7793462615609983826941398e8cdd0239ea250a3904a4f429fad0e6cf; QCCSESSID=mc2p8ji3nsptae2g1uab251ki2; zg_63e87cf22c3e4816a30bfbae9ded4af2=%7B%22sid%22%3A%201561098941206%2C%22updated%22%3A%201561099006894%2C%22info%22%3A%201561098941207%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%7D; CNZZDATA1254842228=1382632714-1560996794-%7C1561336093; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1560998380,1561098787,1561108279,1561340558; Hm_lpvt_3456bee468c83cc63fb5147f119f1075=1561340571; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561340557360%2C%22updated%22%3A%201561340571475%2C%22info%22%3A%201560998379364%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22cuid%22%3A%20%22382bbd2e7e716de67d7c57bdbbe585ab%22%7D");
 		getMethod.addRequestHeader("User-Agent",
 				"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.122 Safari/537.36 SE 2.X MetaSr 1.0");
 		// 设置 get 请求超时 5s
 		getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
 		// 设置请求重试处理
 		getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
+		 
 		// 3.执行 HTTP GET 请求
 		try {
 			int statusCode = httpClient.executeMethod(getMethod);
@@ -107,6 +123,7 @@ public class TestMain {
 			String table = data_1.substring(data_1.indexOf("<table"), data_1.lastIndexOf("</table>"));
 
 			Document doc = Jsoup.parseBodyFragment(table);
+			
 			Element body = doc.body();
 			Elements list = body.getElementsByTag("tr");
 
@@ -127,33 +144,33 @@ public class TestMain {
 
 					continue;
 				}
-				String text = urls.attr("href");
+				String text = urls.attr("href");  
+				String website= "";
 				try {
-					Thread.sleep(500);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					 website = getWebsite(text,false);
+					if (website == "") {
+						continue;
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+					try {
+						System.out.println("进入验证模式--------");
+						yanzhengAli1();
+						yanzhengAli2();
+					    yanzhegn();
+					     website = getWebsite(text,true);
+						if (website == "") {
+							continue;
+						}
+					} catch (Exception e2) {
+						// TODO: handle exception
+						System.out.println("验证存在问题-------");
+					}
 				}
-				String website = getWebsite(text);
-				if (website == "") {
-					continue;
-				}
+				
+				
 				for (Element element2 : item1) {
-					// 法定代表人： 欧亚伟 注册资本：14426万元人民币 成立日期：1967-04-15
-					/**
-					 * <p class="m-t-xs">
-					 * 法定代表人： <a onclick="zhugeTrack('查企业-搜索列表页-查看法定代表人',{'人物名称':'欧亚伟'});" class=
-					 * "text-primary" href="/pl_p12a2b675f587b5f68ede9a9bede857b.html">欧亚伟</a>
-					 * <span class="m-l">注册资本：14426万元人民币</span>
-					 * <span class="m-l">成立日期：1967-04-15</span>
-					 * </p>
-					 * <p class="m-t-xs">
-					 * 邮箱：13711436948@126.com <span class="m-l">电话：020-84336972</span>
-					 * </p>
-					 * <p class="m-t-xs">
-					 * 地址：广州市南沙区大岗镇潭新公路362号自编203房
-					 * </p>
-					 */
+				 
 					String t = element2.text();
 					if (t.contains("法定代表人")) {
 						name = t.substring("法定代表人：".length(), t.indexOf("注册资本"));
@@ -178,12 +195,10 @@ public class TestMain {
 					Company v = new Company(companyName, statustd, name, price, time, email, call, address, website);
 					Clist.add(v);
 				}
-				// System.out.println(companyName + "\t" + name + "\t" + price + "\t" + time +
-				// "\t" + email + "\t" + call + "\t" + address + "\t" + website);
+				 System.out.println(companyName + "\t" + name + "\t" + price + "\t" + time + "\t" + email + "\t" + call + "\t" + address + "\t" + website);
 
 			}
-			//
-			// System.out.println(table);
+		 
 		} catch (HttpException e) {
 			// 发生致命的异常，可能是协议不对或者返回的内容有问题
 			System.out.println("Please check your provided http address!");
@@ -198,7 +213,7 @@ public class TestMain {
 		}
 	}
 
-	private static String getWebsite(String _url) throws IOException {
+	private static String getWebsite(String _url,boolean isYanZ) throws IOException {
 		String url = "https://www.qichacha.com/" + _url;
 		// 1.生成 HttpClinet 对象并设置参数
 		HttpClient httpClient = new HttpClient();
@@ -207,10 +222,15 @@ public class TestMain {
 		// 2.生成 GetMethod 对象并设置参数
 		GetMethod getMethod = new GetMethod(url);
 		getMethod.addRequestHeader("Cookie",
-				"QCCSESSID=p1ft0tgaorlf4a4cogvpi5v7r3; acw_tc=7793461d15611625336878485e5021a0429ce7314f8c35e55c8ba1be7c; UM_distinctid=16b7c89d6492f0-0629935d1baeb5-3c604504-1fa400-16b7c89d64a28b; CNZZDATA1254842228=85523239-1561157384-%7C1561157384; zg_did=%7B%22did%22%3A%20%2216b7c89d81032-018dc4edb6fa46-3c604504-1fa400-16b7c89d811643%22%7D; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1561162537; _uab_collina=156116253853518634866458; hasShow=1; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561162536979%2C%22updated%22%3A%201561162580177%2C%22info%22%3A%201561162536982%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22cuid%22%3A%20%2230ac091ea78c29c624d3b0afb69997c3%22%7D; Hm_lpvt_3456bee468c83cc63fb5147f119f1075=1561162580");
+				"UM_distinctid=16b72c0ff50555-0d50f17e5c8578-3c604504-1fa400-16b72c0ff51660; zg_did=%7B%22did%22%3A%20%2216b72c0ff5f572-011d0e55575c9-3c604504-1fa400-16b72c0ff603ad%22%7D; _uab_collina=156099837952298970109224; acw_tc=7793462615609983826941398e8cdd0239ea250a3904a4f429fad0e6cf; QCCSESSID=mc2p8ji3nsptae2g1uab251ki2; zg_63e87cf22c3e4816a30bfbae9ded4af2=%7B%22sid%22%3A%201561098941206%2C%22updated%22%3A%201561099006894%2C%22info%22%3A%201561098941207%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%7D; CNZZDATA1254842228=1382632714-1560996794-%7C1561336093; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1560998380,1561098787,1561108279,1561340558; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561340557360%2C%22updated%22%3A%201561340630175%2C%22info%22%3A%201560998379364%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22cuid%22%3A%20%22382bbd2e7e716de67d7c57bdbbe585ab%22%7D; Hm_lpvt_3456bee468c83cc63fb5147f119f1075="+yanTime);
 		getMethod.addRequestHeader("User-Agent",
 				"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.122 Safari/537.36 SE 2.X MetaSr 1.0");
 		// 设置 get 请求超时 5s
+		if (isYanZ) {
+			System.out.println("------------是验证模式");
+			getMethod.addRequestHeader("Referer", "https://www.qichacha.com/index_verify?type=companyview&back="+_url);
+		}
+		
 		getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
 		// 设置请求重试处理
 		getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
@@ -240,10 +260,46 @@ public class TestMain {
 		return content.text();
 
 	}
-	private static long curl ;
-	private static void  yanzhengAli() throws HttpException, IOException {
+	private static void  yanzhengAli1() throws HttpException, IOException {
 		curl = System.currentTimeMillis();
-		String url = "https://cf.aliyun.com/nocaptcha/analyze.jsonp?a=QNYX&t=QNYX%3A"+curl+"%3A0.4401802408723421&n=118%23ZVWZz%2FbUvTKbUewjOZ2CReZTZe7hngwuZH2kes6TzfQZZZZZc5i2YwbYtif4fHCVZZVCZOiTzeWzZgCuc6qYI99wtZChXHRYze2ZZwqhzTxizZZZXTNVzegVC411VHC%2FZZ2uZYqhzHRZZgCZXoqYZH2zZZChXHhbZZ2uZY6DzqquezbDcoTtGWex7gsDc5d3ngDQYKiGZ6W21oFZg72gsmbLOEjknPgZWicF%2FFCrNUXWSuYyRZQZuYPAPQqZZyj6zZG0pVRZXGtCQmNbHNyRbBzRDFeU9CT30YvYuPcKz3Be7DpKD9ZnLXqFwUdd1ro1Y%2Be5BlqZ1FYpqlj73ht5tS7YpZw2CfaliUhez430u5X4AIyNSPIp9mtXCOgoyXrjcct0CKYWt87QXamRaPxQc18ngVB9eSfdYe1r064HQ2r8XPqv3NILcApmAZWv20QmNOerOcTZcZbxpzVjf9K58Pq4EguewDQMjNI1MlGUBsew3djqxuk1rSIOwKhvvSx6lKeZubdWshTxRhVITgylO9gAbA0Y1JbqujnOGGsQMu4Wjvw%2BKKRQfzk0e%2BI9UgIEK32Mu5x9Mv37yDFLHJS0DObbHHZ8uM7zt2zhd%2Fci2gynTzpzyoQEk%2B8zmE3BAkSAor4OC0Nv%2FWOcV0BiyCcn%2FcVKzZuy0gZtv9V1R3BfZgUIxiCbBxb1xg3xSanb6OaFsN2J31Uzipok37GHGHtHrwx9RNrUF9KQc4i3F8bQTEi97plYOVSjiyNOJr0ebCeNOi%2B7kAdHhIXNlUW%2BRo5H6zsjWp8YF5VYVZwOR1fWsiVaPK0s1EM9xYWMdU%2B%2BLhMdUh1UJuDdvQendBZHUtP%2BGRmF5rsMtpHZt1aidNwi%2FZKyddDY1DPPXRNX2lUeQGFDUExJQIu9P5APOI1atit363y5HN0mfl5zKDq%2BE4jXKQUYYULXEuLR2MrIoTdO1qQKdF%2B90MpJqcl6S%2BGmBfF2q12JPX3zbqB4ZZ0IuAhWdWmGBiSA7of0Y0rZT%2Fg2ng%3D%3D&p=%7B%22ncSessionID%22%3A%225f37688616c3%22%7D&scene=register&asyn=0&lang=cn&v=966&callback=jsonp_" +getNumber(0);
+		String url = "https://cf.aliyun.com/nocaptcha/initialize.jsonp?a=QNYX&t=QNYX%3A"+curl+"%3A0.4401802408723421&&scene=register&lang=cn&v=v1.2.17&href=https%3A%2F%2Fwww.qichacha.com%2Findex_verify&callback=initializeJsonp_" +getNumber(0);
+		// 1.生成 HttpClinet 对象并设置参数
+		HttpClient httpClient = new HttpClient();
+		// 设置 HTTP 连接超时 5s
+		httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
+		// 2.生成 GetMethod 对象并设置参数
+		GetMethod getMethod = new GetMethod(url);
+		getMethod.addRequestHeader("Cookie",
+				"cna=igkhE3U3mBsCAXkgiqvCPxKU; cnz=wVQ2E/3Au3kCAXkgi0rrnaJm; _ga=GA1.2.398326477.1521444547; UM_distinctid=1687514184f269-02700a4d507bfe-3c604504-1fa400-168751418501da; isg=BLW1YQdaBZYMTWdnwUlWTQAxxDGvmmggjmdUHTfacSx7DtUA_4J5FMOPWJKdSYH8; l=bBITbZ_uv5m4ubZpBOCw5uI8LobOSIRA_uPRwCYXi_5d56L_6dQOlnPQUFp6Vj5RsYTB4IFj7TJ9-etk2");
+		getMethod.addRequestHeader("User-Agent",
+				"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.122 Safari/537.36 SE 2.X MetaSr 1.0");
+		// 设置 get 请求超时 5s
+		getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
+		// 设置请求重试处理
+		getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
+ 
+		// 3.执行 HTTP GET 请求
+
+		int statusCode = httpClient.executeMethod(getMethod);
+		// 判断访问的状态码
+		if (statusCode != HttpStatus.SC_OK) {
+			System.err.println("Method failed: " + getMethod.getStatusLine());
+		}
+		// 4.处理 HTTP 响应内容
+		InputStream inputStream = getMethod.getResponseBodyAsStream();
+		BufferedReader br = new BufferedReader(new InputStreamReader(inputStream));
+		StringBuffer stringBuffer = new StringBuffer();
+		String str = "";
+		while ((str = br.readLine()) != null) {
+			stringBuffer.append(str);
+		}
+		
+		System.out.println(stringBuffer.toString());
+
+	}
+	private static long curl ;
+	private static void  yanzhengAli2() throws HttpException, IOException {
+ 		String url = "https://cf.aliyun.com/nocaptcha/analyze.jsonp?a=QNYX&t=QNYX%3A"+curl+"%3A0.4401802408723421&n=118%23ZVWZz%2FbUvTKbUewjOZ2CReZTZe7hngwuZH2kes6TzfQZZZZZc5i2YwbYtif4fHCVZZVCZOiTzeWzZgCuc6qYI99wtZChXHRYze2ZZwqhzTxizZZZXTNVzegVC411VHC%2FZZ2uZYqhzHRZZgCZXoqYZH2zZZChXHhbZZ2uZY6DzqquezbDcoTtGWex7gsDc5d3ngDQYKiGZ6W21oFZg72gsmbLOEjknPgZWicF%2FFCrNUXWSuYyRZQZuYPAPQqZZyj6zZG0pVRZXGtCQmNbHNyRbBzRDFeU9CT30YvYuPcKz3Be7DpKD9ZnLXqFwUdd1ro1Y%2Be5BlqZ1FYpqlj73ht5tS7YpZw2CfaliUhez430u5X4AIyNSPIp9mtXCOgoyXrjcct0CKYWt87QXamRaPxQc18ngVB9eSfdYe1r064HQ2r8XPqv3NILcApmAZWv20QmNOerOcTZcZbxpzVjf9K58Pq4EguewDQMjNI1MlGUBsew3djqxuk1rSIOwKhvvSx6lKeZubdWshTxRhVITgylO9gAbA0Y1JbqujnOGGsQMu4Wjvw%2BKKRQfzk0e%2BI9UgIEK32Mu5x9Mv37yDFLHJS0DObbHHZ8uM7zt2zhd%2Fci2gynTzpzyoQEk%2B8zmE3BAkSAor4OC0Nv%2FWOcV0BiyCcn%2FcVKzZuy0gZtv9V1R3BfZgUIxiCbBxb1xg3xSanb6OaFsN2J31Uzipok37GHGHtHrwx9RNrUF9KQc4i3F8bQTEi97plYOVSjiyNOJr0ebCeNOi%2B7kAdHhIXNlUW%2BRo5H6zsjWp8YF5VYVZwOR1fWsiVaPK0s1EM9xYWMdU%2B%2BLhMdUh1UJuDdvQendBZHUtP%2BGRmF5rsMtpHZt1aidNwi%2FZKyddDY1DPPXRNX2lUeQGFDUExJQIu9P5APOI1atit363y5HN0mfl5zKDq%2BE4jXKQUYYULXEuLR2MrIoTdO1qQKdF%2B90MpJqcl6S%2BGmBfF2q12JPX3zbqB4ZZ0IuAhWdWmGBiSA7of0Y0rZT%2Fg2ng%3D%3D&p=%7B%22ncSessionID%22%3A%225f37688616c3%22%7D&scene=register&asyn=0&lang=cn&v=966&callback=jsonp_" +getNumber(0);
 		// 1.生成 HttpClinet 对象并设置参数
 		HttpClient httpClient = new HttpClient();
 		// 设置 HTTP 连接超时 5s
@@ -280,12 +336,32 @@ public class TestMain {
 			stringBuffer.append(str);
 		}
 		
-		System.out.println(stringBuffer);
+		str = stringBuffer.toString();
+		if(str.contains("(")) {
+			String data = str.substring(str.indexOf("(")+1,str.lastIndexOf(")"));
+			System.out.println(data);
+			Gson gson = new Gson();
+			AliResultBean bean = gson.fromJson(data, AliResultBean.class);
+			
+			if (bean.isSuccess()) {
+				csessionid = bean.getResult().getCsessionid();
+				value = bean.getResult().getValue() ;
+			}
+		}
+		
+		
+		//System.out.println(stringBuffer);
 
 	}
+	
+	private static String csessionid;
+	private static String value;
+	
+	private static long yanTime ;
 
 	private static void yanzhegn() throws HttpException, IOException {
 		String url = "https://www.qichacha.com/index_verifyAction";
+		yanTime = System.currentTimeMillis();
 		// 1.生成 HttpClinet 对象并设置参数
 		HttpClient httpClient = new HttpClient();
 		// 设置 HTTP 连接超时 5s
@@ -293,19 +369,17 @@ public class TestMain {
 		// 2.生成 GetMethod 对象并设置参数
 		PostMethod getMethod = new PostMethod(url);
 		getMethod.addRequestHeader("Cookie",
-				"QCCSESSID=p1ft0tgaorlf4a4cogvpi5v7r3; acw_tc=7793461d15611625336878485e5021a0429ce7314f8c35e55c8ba1be7c; UM_distinctid=16b7c89d6492f0-0629935d1baeb5-3c604504-1fa400-16b7c89d64a28b; CNZZDATA1254842228=85523239-1561157384-%7C1561157384; zg_did=%7B%22did%22%3A%20%2216b7c89d81032-018dc4edb6fa46-3c604504-1fa400-16b7c89d811643%22%7D; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1561162537; _uab_collina=156116253853518634866458; hasShow=1; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561162536979%2C%22updated%22%3A%201561162580177%2C%22info%22%3A%201561162536982%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22cuid%22%3A%20%2230ac091ea78c29c624d3b0afb69997c3%22%7D; Hm_lpvt_3456bee468c83cc63fb5147f119f1075=1561162580");
+				"UM_distinctid=16b72c0ff50555-0d50f17e5c8578-3c604504-1fa400-16b72c0ff51660; zg_did=%7B%22did%22%3A%20%2216b72c0ff5f572-011d0e55575c9-3c604504-1fa400-16b72c0ff603ad%22%7D; _uab_collina=156099837952298970109224; acw_tc=7793462615609983826941398e8cdd0239ea250a3904a4f429fad0e6cf; QCCSESSID=mc2p8ji3nsptae2g1uab251ki2; zg_63e87cf22c3e4816a30bfbae9ded4af2=%7B%22sid%22%3A%201561098941206%2C%22updated%22%3A%201561099006894%2C%22info%22%3A%201561098941207%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%7D; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1560998380,1561098787,1561108279,1561340558; hasShow=1; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561340557360%2C%22updated%22%3A%201561341338066%2C%22info%22%3A%201560998379364%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22cuid%22%3A%20%22382bbd2e7e716de67d7c57bdbbe585ab%22%7D; CNZZDATA1254842228=1382632714-1560996794-%7C1561346146; Hm_lpvt_3456bee468c83cc63fb5147f119f1075=1561349817"+yanTime);
 		getMethod.addRequestHeader("User-Agent",
 				"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.122 Safari/537.36 SE 2.X MetaSr 1.0");
 		// 设置 get 请求超时 5s
 		getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
 		// 设置请求重试处理
 		getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
-		NameValuePair[] data = { new NameValuePair("csessionid",
-				"01uPtcZ8wErsh34kCS77-5n53CaOycNm15zsJbwmt3tP71OZSz28GFpiM2o42FLRO80guSwCyL-M6JiICtRAJzB0Hzrwy86Xy1xTAvWk_gKd7yRVV5NBHXXAyQfYsSw4o-2PxgIi4iN_xbjpJRCNRxzI3qimr-_g_w-m3mW4nE4pY"),
+		NameValuePair[] data = { new NameValuePair("csessionid", csessionid),
 				new NameValuePair("scene", "register"),
-				new NameValuePair("sig",
-						"05JkRFK6UtwzBZKy3RJfMYNE3xe7Hw_DCcD3j8eTTHtZsNENacZGWG8rY5XvoyDsu055j9mRfqBLmXP6oOov8eyxAx85f5nKKgfdwWSDwH7hx9bm5QnJRgC1wV3-AntCe52EbKIlMFBHWQ3gSn2jpnwH4NrdBzjRgeHq9eKfaH5NKsomcC00Xc3bB7XRNv01vAm8vFRWd60RFXkolf46L9a8iDfDxBnldiIzWh3PemHzNK4tk2tJgmrYA6Ui5R1z06ghd6nDGWIlLuj--7GET-8AJ9GBLCPP4pdCyAIfTCFWO6EF88lMp7UeKFHsFhae6xoD71J8tdByhuCxL59v7QdJqBtVm5FDc6TM9Yn39SQStnPS4AEoYYwQnA3NtiLO1T"),
-				new NameValuePair("token", "QNYX:"+curl+":0.6515615862626503"),
+				new NameValuePair("sig", value),
+				new NameValuePair("token", "QNYX:"+curl+":0.4401802408723421"),
 				new NameValuePair("type", "companyview") };
 		getMethod.setRequestBody(data);
 		// 3.执行 HTTP GET 请求
