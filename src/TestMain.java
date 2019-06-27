@@ -7,8 +7,10 @@ import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.Header;
@@ -32,59 +34,101 @@ import org.jsoup.select.Elements;
 import com.etoak.crawl.page.Page;
 import com.google.gson.Gson;
 
+class Student {
+	public String getNum() {
+		return num;
+	}
+
+	public void setNum(String num) {
+		this.num = num;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Student(String num, String name) {
+		super();
+		this.num = num;
+		this.name = name;
+	}
+
+	private String num;
+	private String name;
+
+	@Override
+	public boolean equals(Object obj) {
+		Student s = (Student) obj;
+		return num.equals(s.num) && name.equals(s.name);
+	}
+
+	@Override
+	public int hashCode() {
+		String in = num + name;
+		return in.hashCode();
+	}
+
+}
+
 public class TestMain {
 
 	private static List<Company> Clist = new ArrayList<Company>();
 
 	public static void main(String[] args) {
-		try {
-			yanzhengAli1();
-			yanzhengAli2();
-		    yanzhegn();
-		} catch (HttpException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-//		int page = 100;
-//		while (page < 300) {
-//			try {
-//				System.out.println("size--------------" + Clist.size());
-//				http(page);
-//			} catch (Exception e) {
-//				// TODO: handle exception
-//				 e.printStackTrace();
-//				 System.out.println("dddd");
-//				try {
-//					
-//					 yanzhengAli1();
-//					 yanzhengAli2();
-//					
-//					 yanzhegn();
-//					http(page );
+
+//		try {
+//			yanzhengAli1();
+//			yanzhengAli2();
 //
-//				} catch (Exception e2) {
-//					// TODO: handle exception
-//				}
-//				return;
-//			}
-//			page++;
-//
+//		    yanzhegn();
+//		} catch (HttpException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
 //		}
-//		getGenerateExcel();
+//		if (true) {
+//			
+//			return;
+//		}
+ 		int page = 45;
+		while (page < 251) {
+			try {
+				System.out.println("size--------------" + Clist.size());
+				http(page);
+			} catch (Exception e) {
+				// TODO: handle exception
+				 e.printStackTrace();
+				try {
+					
+					getGenerateExcel();
+
+				} catch (Exception e2) {
+					// TODO: handle exception
+					e2.printStackTrace();
+				}
+				return;
+			}
+			page++;
+
+		}
+		getGenerateExcel();
 	}
 
 	private static void http(int page) {
 		System.out.println("当前第" + page + "页");
-		String url;
-		if (page == 1) {
-			url = "https://www.qichacha.com/search?key=%E5%B9%BF%E5%B7%9E%E5%88%B6%E9%80%A0%E4%B8%9A";
-		} else
-			url = "https://www.qichacha.com/search_index?key=%E5%B9%BF%E4%B8%9C%E5%88%B6%E9%80%A0%E4%B8%9A#p:" + page
-					+ "&";
+		String url = "https://www.qichacha.com/search_index?key=%E5%B9%BF%E5%B7%9E%E5%88%B6%E9%80%A0%E4%B8%9A&ajaxflag=1&p="
+				+ page + "&ajaxflag=1";
+//		if (page == 1) {
+//			url 
+//		} else
+//			url = "https://www.qichacha.com/search_index?key=%E5%B9%BF%E4%B8%9C%E5%88%B6%E9%80%A0%E4%B8%9A#p:" + page
+//					+ "&";
 		// 1.生成 HttpClinet 对象并设置参数
 		HttpClient httpClient = new HttpClient();
 		// 设置 HTTP 连接超时 5s
@@ -92,14 +136,14 @@ public class TestMain {
 		// 2.生成 GetMethod 对象并设置参数
 		GetMethod getMethod = new GetMethod(url);
 		getMethod.addRequestHeader("Cookie",
-				"UM_distinctid=16b72c0ff50555-0d50f17e5c8578-3c604504-1fa400-16b72c0ff51660; zg_did=%7B%22did%22%3A%20%2216b72c0ff5f572-011d0e55575c9-3c604504-1fa400-16b72c0ff603ad%22%7D; _uab_collina=156099837952298970109224; acw_tc=7793462615609983826941398e8cdd0239ea250a3904a4f429fad0e6cf; QCCSESSID=mc2p8ji3nsptae2g1uab251ki2; zg_63e87cf22c3e4816a30bfbae9ded4af2=%7B%22sid%22%3A%201561098941206%2C%22updated%22%3A%201561099006894%2C%22info%22%3A%201561098941207%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%7D; CNZZDATA1254842228=1382632714-1560996794-%7C1561336093; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1560998380,1561098787,1561108279,1561340558; Hm_lpvt_3456bee468c83cc63fb5147f119f1075=1561340571; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561340557360%2C%22updated%22%3A%201561340571475%2C%22info%22%3A%201560998379364%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22cuid%22%3A%20%22382bbd2e7e716de67d7c57bdbbe585ab%22%7D");
+				"UM_distinctid=16b72c0ff50555-0d50f17e5c8578-3c604504-1fa400-16b72c0ff51660; zg_did=%7B%22did%22%3A%20%2216b72c0ff5f572-011d0e55575c9-3c604504-1fa400-16b72c0ff603ad%22%7D; _uab_collina=156099837952298970109224; acw_tc=7793462615609983826941398e8cdd0239ea250a3904a4f429fad0e6cf; QCCSESSID=mc2p8ji3nsptae2g1uab251ki2; zg_63e87cf22c3e4816a30bfbae9ded4af2=%7B%22sid%22%3A%201561098941206%2C%22updated%22%3A%201561099006894%2C%22info%22%3A%201561098941207%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%7D; hasShow=1; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1561357674,1561366594,1561426571,1561609861; CNZZDATA1254842228=1382632714-1560996794-%7C1561613490; Hm_lpvt_3456bee468c83cc63fb5147f119f1075=1561615529; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561615383414%2C%22updated%22%3A%201561615573768%2C%22info%22%3A%201561609857021%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22www.qichacha.com%22%2C%22cuid%22%3A%20%22d3da367ce98638adec75c748c78c6c89%22%7D");
 		getMethod.addRequestHeader("User-Agent",
-				"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.122 Safari/537.36 SE 2.X MetaSr 1.0");
+				"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
 		// 设置 get 请求超时 5s
 		getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
 		// 设置请求重试处理
 		getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
-		 
+
 		// 3.执行 HTTP GET 请求
 		try {
 			int statusCode = httpClient.executeMethod(getMethod);
@@ -114,18 +158,12 @@ public class TestMain {
 			while ((str = br.readLine()) != null) {
 				stringBuffer.append(str);
 			}
+			String dataString = stringBuffer.toString();
+			Document doc = Jsoup.parseBodyFragment(stringBuffer.toString());
 
-			String data = stringBuffer.toString();
-			int index1 = data.indexOf("<body>");
-			int index2 = data.lastIndexOf("</body>");
-
-			String data_1 = data.substring(data.indexOf("<body>"), data.lastIndexOf("</body>"));
-			String table = data_1.substring(data_1.indexOf("<table"), data_1.lastIndexOf("</table>"));
-
-			Document doc = Jsoup.parseBodyFragment(table);
-			
 			Element body = doc.body();
-			Elements list = body.getElementsByTag("tr");
+			Element itemElement = body.getElementsByTag("tbody").first();
+			Elements list = itemElement.getElementsByTag("tr");
 
 			for (Element element : list) {
 				String companyName = element.getElementsByTag("a").first().text();
@@ -138,16 +176,16 @@ public class TestMain {
 				String address = "";
 				Elements item1 = element.getElementsByClass("m-t-xs");
 				Element urls = element.getElementsByClass("ma_h1").first();
-				String statustd = element.getElementsByClass("statustd").first()
-						.getElementsByClass("nstatus text-success-lt m-l-xs").first().text();
+				String statustd = element.getElementsByClass("statustd").first().getElementsByTag("span").first()
+						.text();
 				if (!statustd.equals("在业")) {
 
 					continue;
 				}
-				String text = urls.attr("href");  
-				String website= "";
+				String text = urls.attr("href");
+				String website = "";
 				try {
-					 website = getWebsite(text,false);
+					website = getWebsite(text, false);
 					if (website == "") {
 						continue;
 					}
@@ -157,8 +195,8 @@ public class TestMain {
 						System.out.println("进入验证模式--------");
 						yanzhengAli1();
 						yanzhengAli2();
-					    yanzhegn();
-					     website = getWebsite(text,true);
+						yanzhegn();
+						website = getWebsite(text, true);
 						if (website == "") {
 							continue;
 						}
@@ -167,13 +205,18 @@ public class TestMain {
 						System.out.println("验证存在问题-------");
 					}
 				}
-				
-				
+
 				for (Element element2 : item1) {
-				 
+
 					String t = element2.text();
-					if (t.contains("法定代表人")) {
-						name = t.substring("法定代表人：".length(), t.indexOf("注册资本"));
+					if (t.contains("注册资本") || t.contains("成立日期")) {
+						try {
+							name = element2.getElementsByTag("a").first().text();
+						} catch (Exception e) {
+							// TODO: handle exception
+							name = t.substring(t.indexOf("：")+1, t.indexOf("注册资本："));
+						}
+
 						price = t.substring(t.indexOf("注册资本：") + "注册资本：".length(), t.indexOf("成立日期"));
 						time = t.substring(t.indexOf("成立日期：") + "成立日期：".length());
 					}
@@ -195,10 +238,11 @@ public class TestMain {
 					Company v = new Company(companyName, statustd, name, price, time, email, call, address, website);
 					Clist.add(v);
 				}
-				 System.out.println(companyName + "\t" + name + "\t" + price + "\t" + time + "\t" + email + "\t" + call + "\t" + address + "\t" + website);
+				System.out.println(companyName + "\t" + name + "\t" + price + "\t" + time + "\t" + email + "\t" + call
+						+ "\t" + address + "\t" + website);
 
 			}
-		 
+
 		} catch (HttpException e) {
 			// 发生致命的异常，可能是协议不对或者返回的内容有问题
 			System.out.println("Please check your provided http address!");
@@ -213,7 +257,7 @@ public class TestMain {
 		}
 	}
 
-	private static String getWebsite(String _url,boolean isYanZ) throws IOException {
+	private static String getWebsite(String _url, boolean isYanZ) throws IOException {
 		String url = "https://www.qichacha.com/" + _url;
 		// 1.生成 HttpClinet 对象并设置参数
 		HttpClient httpClient = new HttpClient();
@@ -222,15 +266,17 @@ public class TestMain {
 		// 2.生成 GetMethod 对象并设置参数
 		GetMethod getMethod = new GetMethod(url);
 		getMethod.addRequestHeader("Cookie",
-				"UM_distinctid=16b72c0ff50555-0d50f17e5c8578-3c604504-1fa400-16b72c0ff51660; zg_did=%7B%22did%22%3A%20%2216b72c0ff5f572-011d0e55575c9-3c604504-1fa400-16b72c0ff603ad%22%7D; _uab_collina=156099837952298970109224; acw_tc=7793462615609983826941398e8cdd0239ea250a3904a4f429fad0e6cf; QCCSESSID=mc2p8ji3nsptae2g1uab251ki2; zg_63e87cf22c3e4816a30bfbae9ded4af2=%7B%22sid%22%3A%201561098941206%2C%22updated%22%3A%201561099006894%2C%22info%22%3A%201561098941207%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%7D; CNZZDATA1254842228=1382632714-1560996794-%7C1561336093; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1560998380,1561098787,1561108279,1561340558; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561340557360%2C%22updated%22%3A%201561340630175%2C%22info%22%3A%201560998379364%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22cuid%22%3A%20%22382bbd2e7e716de67d7c57bdbbe585ab%22%7D; Hm_lpvt_3456bee468c83cc63fb5147f119f1075="+yanTime);
+				"UM_distinctid=16b72c0ff50555-0d50f17e5c8578-3c604504-1fa400-16b72c0ff51660; zg_did=%7B%22did%22%3A%20%2216b72c0ff5f572-011d0e55575c9-3c604504-1fa400-16b72c0ff603ad%22%7D; _uab_collina=156099837952298970109224; acw_tc=7793462615609983826941398e8cdd0239ea250a3904a4f429fad0e6cf; QCCSESSID=mc2p8ji3nsptae2g1uab251ki2; zg_63e87cf22c3e4816a30bfbae9ded4af2=%7B%22sid%22%3A%201561098941206%2C%22updated%22%3A%201561099006894%2C%22info%22%3A%201561098941207%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%7D; CNZZDATA1254842228=1382632714-1560996794-%7C1561336093; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1560998380,1561098787,1561108279,1561340558; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561340557360%2C%22updated%22%3A%201561340630175%2C%22info%22%3A%201560998379364%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22cuid%22%3A%20%22382bbd2e7e716de67d7c57bdbbe585ab%22%7D; Hm_lpvt_3456bee468c83cc63fb5147f119f1075="
+						+ yanTime);
 		getMethod.addRequestHeader("User-Agent",
-				"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.122 Safari/537.36 SE 2.X MetaSr 1.0");
+				"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
 		// 设置 get 请求超时 5s
 		if (isYanZ) {
 			System.out.println("------------是验证模式");
-			getMethod.addRequestHeader("Referer", "https://www.qichacha.com/index_verify?type=companyview&back="+_url);
+			getMethod.addRequestHeader("Referer",
+					"https://www.qichacha.com/index_verify?type=companyview&back=" + _url);
 		}
-		
+
 		getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
 		// 设置请求重试处理
 		getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
@@ -260,9 +306,12 @@ public class TestMain {
 		return content.text();
 
 	}
-	private static void  yanzhengAli1() throws HttpException, IOException {
+
+	private static void yanzhengAli1() throws HttpException, IOException {
 		curl = System.currentTimeMillis();
-		String url = "https://cf.aliyun.com/nocaptcha/initialize.jsonp?a=QNYX&t=QNYX%3A"+curl+"%3A0.4401802408723421&&scene=register&lang=cn&v=v1.2.17&href=https%3A%2F%2Fwww.qichacha.com%2Findex_verify&callback=initializeJsonp_" +getNumber(0);
+		String url = "https://cf.aliyun.com/nocaptcha/initialize.jsonp?a=QNYX&t=QNYX%3A" + curl
+				+ "%3A0.21306380947982229&scene=register&lang=cn&v=v1.2.17&href=https%3A%2F%2Fwww.qichacha.com%2Findex_verify&comm=&callback=initializeJsonp_"
+				+ getNumber(0);
 		// 1.生成 HttpClinet 对象并设置参数
 		HttpClient httpClient = new HttpClient();
 		// 设置 HTTP 连接超时 5s
@@ -270,14 +319,14 @@ public class TestMain {
 		// 2.生成 GetMethod 对象并设置参数
 		GetMethod getMethod = new GetMethod(url);
 		getMethod.addRequestHeader("Cookie",
-				"cna=igkhE3U3mBsCAXkgiqvCPxKU; cnz=wVQ2E/3Au3kCAXkgi0rrnaJm; _ga=GA1.2.398326477.1521444547; UM_distinctid=1687514184f269-02700a4d507bfe-3c604504-1fa400-168751418501da; isg=BLW1YQdaBZYMTWdnwUlWTQAxxDGvmmggjmdUHTfacSx7DtUA_4J5FMOPWJKdSYH8; l=bBITbZ_uv5m4ubZpBOCw5uI8LobOSIRA_uPRwCYXi_5d56L_6dQOlnPQUFp6Vj5RsYTB4IFj7TJ9-etk2");
+				"cna=zINpEyavAUUCAQ6Rkd5nz/Fy; _ga=GA1.2.978792435.1526268887; consoleRecentVisit=oss%2Cram; login_aliyunid_pk=1983119870622318; login_aliyunid_pks=\"BG+raN6/2ekXd/yNGiJ3FeoM7ukdLdmlZHaZECtwOSTD/M=\"; aliyun_site=CN; CLOSE_HELP_GUIDE=true; aliyun_choice=CN; CLOSE_HELP_GUIDE_V2=true; cps=zwYSodrSlqydp2c00b0qdPkTSZAQXEL9FpTYA6z6%2FoMSy7P0Q%2FcJRLz%2FjSCKOhDa; aliyun_lang=zh; UM_distinctid=16b4a747cbf562-0feed63827f77e-3c604504-1fa400-16b4a747cc0748; login_aliyunid_sc=74u48x24xL7xCj1SQ9*cYL0T_GM6j755NjwLgFPERfcvy4Sm4N36mjzUyO2r8J*i56CirX_*9VBpfkTFdJTd51hE7x1b2Bt8IwxHfRayq5XrmJK*H1vT5ERPp2356A*R; isg=BHNzD-ihKgqZHed6ETgZ6gPkAnddAAcYfL1SGyURoRLwJJTGrXwiuIE13hRvhF9i; l=bBLyDJGev_E7Fck5BOfgmuI8aK7OCIOffsPzw4_GlICPOcjJk12FWZHxWepvC3GVa6dDR3RYGVWyB58-zPaTQ");
 		getMethod.addRequestHeader("User-Agent",
-				"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.122 Safari/537.36 SE 2.X MetaSr 1.0");
+				"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
 		// 设置 get 请求超时 5s
 		getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
 		// 设置请求重试处理
 		getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
- 
+
 		// 3.执行 HTTP GET 请求
 
 		int statusCode = httpClient.executeMethod(getMethod);
@@ -293,23 +342,27 @@ public class TestMain {
 		while ((str = br.readLine()) != null) {
 			stringBuffer.append(str);
 		}
-		
+
 		System.out.println(stringBuffer.toString());
 
 	}
-	private static long curl ;
-	private static void  yanzhengAli2() throws HttpException, IOException {
- 		String url = "https://cf.aliyun.com/nocaptcha/analyze.jsonp?a=QNYX&t=QNYX%3A"+curl+"%3A0.4401802408723421&n=118%23ZVWZz%2FbUvTKbUewjOZ2CReZTZe7hngwuZH2kes6TzfQZZZZZc5i2YwbYtif4fHCVZZVCZOiTzeWzZgCuc6qYI99wtZChXHRYze2ZZwqhzTxizZZZXTNVzegVC411VHC%2FZZ2uZYqhzHRZZgCZXoqYZH2zZZChXHhbZZ2uZY6DzqquezbDcoTtGWex7gsDc5d3ngDQYKiGZ6W21oFZg72gsmbLOEjknPgZWicF%2FFCrNUXWSuYyRZQZuYPAPQqZZyj6zZG0pVRZXGtCQmNbHNyRbBzRDFeU9CT30YvYuPcKz3Be7DpKD9ZnLXqFwUdd1ro1Y%2Be5BlqZ1FYpqlj73ht5tS7YpZw2CfaliUhez430u5X4AIyNSPIp9mtXCOgoyXrjcct0CKYWt87QXamRaPxQc18ngVB9eSfdYe1r064HQ2r8XPqv3NILcApmAZWv20QmNOerOcTZcZbxpzVjf9K58Pq4EguewDQMjNI1MlGUBsew3djqxuk1rSIOwKhvvSx6lKeZubdWshTxRhVITgylO9gAbA0Y1JbqujnOGGsQMu4Wjvw%2BKKRQfzk0e%2BI9UgIEK32Mu5x9Mv37yDFLHJS0DObbHHZ8uM7zt2zhd%2Fci2gynTzpzyoQEk%2B8zmE3BAkSAor4OC0Nv%2FWOcV0BiyCcn%2FcVKzZuy0gZtv9V1R3BfZgUIxiCbBxb1xg3xSanb6OaFsN2J31Uzipok37GHGHtHrwx9RNrUF9KQc4i3F8bQTEi97plYOVSjiyNOJr0ebCeNOi%2B7kAdHhIXNlUW%2BRo5H6zsjWp8YF5VYVZwOR1fWsiVaPK0s1EM9xYWMdU%2B%2BLhMdUh1UJuDdvQendBZHUtP%2BGRmF5rsMtpHZt1aidNwi%2FZKyddDY1DPPXRNX2lUeQGFDUExJQIu9P5APOI1atit363y5HN0mfl5zKDq%2BE4jXKQUYYULXEuLR2MrIoTdO1qQKdF%2B90MpJqcl6S%2BGmBfF2q12JPX3zbqB4ZZ0IuAhWdWmGBiSA7of0Y0rZT%2Fg2ng%3D%3D&p=%7B%22ncSessionID%22%3A%225f37688616c3%22%7D&scene=register&asyn=0&lang=cn&v=966&callback=jsonp_" +getNumber(0);
-		// 1.生成 HttpClinet 对象并设置参数
+
+	private static long curl;
+
+	private static void yanzhengAli2() throws HttpException, IOException {
+		String url = "https://cf.aliyun.com/nocaptcha/analyze.jsonp?a=QNYX&t=QNYX%3A" + curl
+				+ "%3A0.21306380947982229&n=118%23ZVWZzwLE%2BQCDSZSQre2CcZZTZeDh6HwzZHVfCnqhzZ1eZbHZ6Gq4ZHZTZeChVHZVmc7yYJOmawbVzeCZ%2BfqVZe2zZZZTXHC%2FzXucZheTzeRZzDCZVoqYZHY3TeFhVHhHZZZ%2Fwj53CuZxuHCZXoqVzHZzZeZTVHRVzZ2ZZzqTzeRZTHCZXoqVde%2FOZeVe0gAxfgwkz0GTihMbuAAazwHVpgv%2BYkgvZ2%2BD2CK9bBqh7dl%2FmelCtgVHz2Su0jBN6JC7ZZe3L4PXZZxqGggXUFoUZYiP%2BaHdapRop8tbJR5WbI0OsaguMbuSZ6IRgjAjP%2BohWkgLo%2FrlHZxaJF4Y%2FkAWqNR5H%2BQ25p1kKeC5GcRXQXxCvnw2%2BX5fC162TRxDIzSC%2BRY5jmXdEOM0SYvz%2FR25dHpcH65UMr2clQVrSU1EbKHGD%2FPXjGSABDlOZfQfuTDiauJmv0g0g9J41uhDEdelr%2FcG5j5stoReUAD88kzhqkmIcUqVr4GwdMI9gplhFvG%2F5bAlpUTXfy0anbIacC9xshnWV3InwtV7Fbld9P4KfDCA4WMTpIhTxYDrblymwHZ56xgPx2v70PdQluwCj5GZoUsrx0vll0mt0Z6FIeLtBUDFyuvwGk%2FNMjM6wwMfpIlJuaBFQwu%2FqIhheLdpWiW1l3xB20XCK4gQ9Oiv3UHncizqU5S8aJGmG3M7dZcq8xX8KxfhEfB8po19SeOutlSSXiJAzwsFHMWZ4wdhOrbAfO1yFA77dtxw1cNX8NXPHyG2cAO0swq%2Fve3GrjFsJFfgc47RZnI%2FcMvYnU%2BxrC50d8ebimCcLpDhlYIBgRPhScIfkIrHa8Wz2J4AOSfMCWcEzsvIFDv2uF32XJ4iRAJFaXj%2BqVZ12ZkKflOHX95X9IbJ4BHR5CFr3aRE88SdLBM%2BxF1w9Ft8KxsapyYiQ9ptktPFv7O1x%2FbT7Fn00iziPGsqz3HLB2iPasVak%2FvqvM5IJqEziDM3dOHYaCa8SshisICa2zdU7srrSTtN5UHPqCHz3N%2FkCyROlN9mAbU%2BN8znlNoc1wpfCsLCAP18rpYajIQ4q7kwPaQudV1kJfoj%2FI7b&p=%7B%22ncSessionID%22%3A%225f3768888bde%22%7D&scene=register&asyn=0&lang=cn&v=966&callback=jsonp_"
+				+ getNumber(0);
+ 		// 1.生成 HttpClinet 对象并设置参数
 		HttpClient httpClient = new HttpClient();
 		// 设置 HTTP 连接超时 5s
 		httpClient.getHttpConnectionManager().getParams().setConnectionTimeout(5000);
 		// 2.生成 GetMethod 对象并设置参数
 		GetMethod getMethod = new GetMethod(url);
 		getMethod.addRequestHeader("Cookie",
-				"cna=igkhE3U3mBsCAXkgiqvCPxKU; cnz=wVQ2E/3Au3kCAXkgi0rrnaJm; _ga=GA1.2.398326477.1521444547; UM_distinctid=1687514184f269-02700a4d507bfe-3c604504-1fa400-168751418501da; isg=BLW1YQdaBZYMTWdnwUlWTQAxxDGvmmggjmdUHTfacSx7DtUA_4J5FMOPWJKdSYH8; l=bBITbZ_uv5m4ubZpBOCw5uI8LobOSIRA_uPRwCYXi_5d56L_6dQOlnPQUFp6Vj5RsYTB4IFj7TJ9-etk2");
+				"cna=zINpEyavAUUCAQ6Rkd5nz/Fy; _ga=GA1.2.978792435.1526268887; consoleRecentVisit=oss%2Cram; login_aliyunid_pk=1983119870622318; login_aliyunid_pks=\"BG+raN6/2ekXd/yNGiJ3FeoM7ukdLdmlZHaZECtwOSTD/M=\"; aliyun_site=CN; CLOSE_HELP_GUIDE=true; aliyun_choice=CN; CLOSE_HELP_GUIDE_V2=true; cps=zwYSodrSlqydp2c00b0qdPkTSZAQXEL9FpTYA6z6%2FoMSy7P0Q%2FcJRLz%2FjSCKOhDa; aliyun_lang=zh; UM_distinctid=16b4a747cbf562-0feed63827f77e-3c604504-1fa400-16b4a747cc0748; login_aliyunid_sc=74u48x24xL7xCj1SQ9*cYL0T_GM6j755NjwLgFPERfcvy4Sm4N36mjzUyO2r8J*i56CirX_*9VBpfkTFdJTd51hE7x1b2Bt8IwxHfRayq5XrmJK*H1vT5ERPp2356A*R; isg=BHNzD-ihKgqZHed6ETgZ6gPkAnddAAcYfL1SGyURoRLwJJTGrXwiuIE13hRvhF9i; l=bBLyDJGev_E7Fck5BOfgmuI8aK7OCIOffsPzw4_GlICPOcjJk12FWZHxWepvC3GVa6dDR3RYGVWyB58-zPaTQ");
 		getMethod.addRequestHeader("User-Agent",
-				"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.122 Safari/537.36 SE 2.X MetaSr 1.0");
+				"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
 		// 设置 get 请求超时 5s
 		getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
 		// 设置请求重试处理
@@ -335,29 +388,28 @@ public class TestMain {
 		while ((str = br.readLine()) != null) {
 			stringBuffer.append(str);
 		}
-		
+
 		str = stringBuffer.toString();
-		if(str.contains("(")) {
-			String data = str.substring(str.indexOf("(")+1,str.lastIndexOf(")"));
+		if (str.contains("(")) {
+			String data = str.substring(str.indexOf("(") + 1, str.lastIndexOf(")"));
 			System.out.println(data);
 			Gson gson = new Gson();
 			AliResultBean bean = gson.fromJson(data, AliResultBean.class);
-			
+
 			if (bean.isSuccess()) {
 				csessionid = bean.getResult().getCsessionid();
-				value = bean.getResult().getValue() ;
+				value = bean.getResult().getValue();
 			}
 		}
-		
-		
-		//System.out.println(stringBuffer);
+
+		// System.out.println(stringBuffer);
 
 	}
-	
+
 	private static String csessionid;
 	private static String value;
-	
-	private static long yanTime ;
+
+	private static long yanTime;
 
 	private static void yanzhegn() throws HttpException, IOException {
 		String url = "https://www.qichacha.com/index_verifyAction";
@@ -369,17 +421,16 @@ public class TestMain {
 		// 2.生成 GetMethod 对象并设置参数
 		PostMethod getMethod = new PostMethod(url);
 		getMethod.addRequestHeader("Cookie",
-				"UM_distinctid=16b72c0ff50555-0d50f17e5c8578-3c604504-1fa400-16b72c0ff51660; zg_did=%7B%22did%22%3A%20%2216b72c0ff5f572-011d0e55575c9-3c604504-1fa400-16b72c0ff603ad%22%7D; _uab_collina=156099837952298970109224; acw_tc=7793462615609983826941398e8cdd0239ea250a3904a4f429fad0e6cf; QCCSESSID=mc2p8ji3nsptae2g1uab251ki2; zg_63e87cf22c3e4816a30bfbae9ded4af2=%7B%22sid%22%3A%201561098941206%2C%22updated%22%3A%201561099006894%2C%22info%22%3A%201561098941207%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%7D; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1560998380,1561098787,1561108279,1561340558; hasShow=1; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561340557360%2C%22updated%22%3A%201561341338066%2C%22info%22%3A%201560998379364%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22cuid%22%3A%20%22382bbd2e7e716de67d7c57bdbbe585ab%22%7D; CNZZDATA1254842228=1382632714-1560996794-%7C1561346146; Hm_lpvt_3456bee468c83cc63fb5147f119f1075=1561349817"+yanTime);
+				" UM_distinctid=16b72c0ff50555-0d50f17e5c8578-3c604504-1fa400-16b72c0ff51660; zg_did=%7B%22did%22%3A%20%2216b72c0ff5f572-011d0e55575c9-3c604504-1fa400-16b72c0ff603ad%22%7D; _uab_collina=156099837952298970109224; acw_tc=7793462615609983826941398e8cdd0239ea250a3904a4f429fad0e6cf; QCCSESSID=mc2p8ji3nsptae2g1uab251ki2; zg_63e87cf22c3e4816a30bfbae9ded4af2=%7B%22sid%22%3A%201561098941206%2C%22updated%22%3A%201561099006894%2C%22info%22%3A%201561098941207%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%7D; hasShow=1; CNZZDATA1254842228=1382632714-1560996794-%7C1561624290; Hm_lvt_3456bee468c83cc63fb5147f119f1075=1561366594,1561426571,1561609861,1561626633; zg_de1d1a35bfa24ce29bbf2c7eb17e6c4f=%7B%22sid%22%3A%201561625393920%2C%22updated%22%3A%201561626635166%2C%22info%22%3A%201561609857021%2C%22superProperty%22%3A%20%22%7B%7D%22%2C%22platform%22%3A%20%22%7B%7D%22%2C%22utm%22%3A%20%22%7B%7D%22%2C%22referrerDomain%22%3A%20%22%22%2C%22cuid%22%3A%20%22d3da367ce98638adec75c748c78c6c89%22%7D; Hm_lpvt_3456bee468c83cc63fb5147f119f1075="
+						+ yanTime);
 		getMethod.addRequestHeader("User-Agent",
-				"Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.122 Safari/537.36 SE 2.X MetaSr 1.0");
+				"Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/63.0.3239.132 Safari/537.36");
 		// 设置 get 请求超时 5s
 		getMethod.getParams().setParameter(HttpMethodParams.SO_TIMEOUT, 5000);
 		// 设置请求重试处理
 		getMethod.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler());
-		NameValuePair[] data = { new NameValuePair("csessionid", csessionid),
-				new NameValuePair("scene", "register"),
-				new NameValuePair("sig", value),
-				new NameValuePair("token", "QNYX:"+curl+":0.4401802408723421"),
+		NameValuePair[] data = { new NameValuePair("csessionid", csessionid), new NameValuePair("scene", "register"),
+				new NameValuePair("sig", value), new NameValuePair("token", "QNYX:" + curl + ":0.21306380947982229"),
 				new NameValuePair("type", "companyview") };
 		getMethod.setRequestBody(data);
 		// 3.执行 HTTP GET 请求
@@ -404,6 +455,10 @@ public class TestMain {
 
 	// 导出 Excel
 	public static void getGenerateExcel() {
+		System.out.println("生成表格 去除重复前----size " + Clist.size());
+		Set<Company> ts = new HashSet<Company>();
+		ts.addAll(Clist);
+		System.out.println("生成表格 去除重复后----size " + ts.size());
 
 		// 第一步，创建一个webbook，对应一个Excel文件
 		HSSFWorkbook wb = new HSSFWorkbook();
@@ -443,10 +498,9 @@ public class TestMain {
 		cell.setCellValue("官网");
 		cell.setCellStyle(style);
 
-		for (int i = 0; i < Clist.size(); i++) {
+		int i = 0;
+		for (Company commodity : ts) {
 			row = sheet.createRow((int) i + 1);
-			Company commodity = (Company) Clist.get(i);
-			// 第五步，创建单元格，并设置值
 
 			row.createCell(0).setCellValue(commodity.getCompanyName());// 商品名称
 			row.createCell(1).setCellValue(commodity.getStatustd());// 商品类型
@@ -457,8 +511,10 @@ public class TestMain {
 			row.createCell(6).setCellValue(commodity.getCall());// 厂名
 			row.createCell(7).setCellValue(commodity.getAddress());// 厂址
 			row.createCell(8).setCellValue(commodity.getWebsite());// 厂家联系电话
+			i++;
 
 		}
+		 
 		// 第六步，将文件存到指定位置
 		try {
 			Date date = new Date();
@@ -587,5 +643,15 @@ class Company {
 		this.address = address;
 		this.website = website;
 	}
+	@Override
+	public boolean equals(Object obj) {
+		Company s = (Company) obj;
+		return companyName.trim().equals(s.companyName.trim()) && name.trim().equals(s.name.trim());
+	}
 
+	@Override
+	public int hashCode() {
+		String in = companyName.trim() + name.trim();
+		return in.hashCode();
+	}
 }
