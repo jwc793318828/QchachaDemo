@@ -31,8 +31,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import com.etoak.crawl.page.Page;
-import com.google.gson.Gson;
+ import com.google.gson.Gson;
 
 class Student {
 	public String getNum() {
@@ -80,23 +79,8 @@ public class TestMain {
 
 	public static void main(String[] args) {
 
-//		try {
-//			yanzhengAli1();
-//			yanzhengAli2();
-//
-//		    yanzhegn();
-//		} catch (HttpException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		if (true) {
-//			
-//			return;
-//		}
- 		int page = 45;
+
+ 		int page = 1;
 		while (page < 251) {
 			try {
 				System.out.println("size--------------" + Clist.size());
